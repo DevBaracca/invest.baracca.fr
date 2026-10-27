@@ -101,3 +101,30 @@ Il poste désormais vers `send_contact.php` (méthode POST) :
 
 Note : l'envoi dépend de la fonction mail() du serveur (sendmail/SMTP
 configuré côté hébergeur).
+
+------------
+
+Back-office : chiffres clés, documents et accès investisseurs
+
+Un back-office est disponible à l'adresse /admin/ (identifiant `admin`,
+mot de passe défini dans config.php — à changer après la première
+connexion). Session sécurisée, limitation de débit (5 échecs / 15 min
+par IP) et jetons CSRF sur tous les formulaires.
+
+- Chiffres clés (admin/stats.php) : modifie les valeurs affichées sur
+  l'accueil, la page « Investir » et l'espace investisseurs (euros
+  collectés, objectif, investisseurs, modules déployés, modules en
+  production, demandes en attente). Stockées dans data/stats.json.
+- Documents (admin/documents.php) : upload (PDF, Excel, Word, CSV,
+  images, ZIP — 10 Mo max) et suppression des documents de l'espace
+  investisseurs (assets/documents/). telecharger.php délivre
+  désormais tout fichier de ce dossier ayant une extension autorisée
+  (la liste blanche en dur a été supprimée).
+- Accès investisseurs (admin/investisseurs.php) : création de comptes
+  individuels (email + mot de passe, 8 caractères min.), réinitialisation
+  du mot de passe et suppression. Stockés dans data/users.json (hash
+  bcrypt, jamais de mot de passe en clair).
+- L'espace investisseurs se connecte désormais avec un email et un mot
+  de passe personnels. L'ancien mot de passe unique partagé ne
+  fonctionne plus : chaque investisseur doit recevoir ses identifiants
+  depuis le back-office.

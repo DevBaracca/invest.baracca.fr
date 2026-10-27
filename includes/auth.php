@@ -1,11 +1,13 @@
 <?php
 /**
  * Baracca - Site investissement
- * Espace investisseurs : authentification par mot de passe (session PHP + bcrypt),
- * sur le même modèle que le back-office du blog.
+ * Espace investisseurs : authentification par compte individuel (email + mot de passe,
+ * session PHP + bcrypt), sur le même modèle que le back-office du blog.
+ * Les comptes sont gérés depuis le back-office (data/users.json).
  */
 
 require_once __DIR__ . '/../config.php';
+require_once __DIR__ . '/users.php';
 
 // Cookie de session renforcé : inaccessible en JavaScript, envoyé uniquement sur ce site (SameSite=Lax)
 session_set_cookie_params([
@@ -18,18 +20,29 @@ if (session_status() === PHP_SESSION_NONE) {
 
 function invest_is_logged_in(): bool
 {
-    return !empty($_SESSION['invest_auth']);
+    return !empty($_SESSION['invest_user_id']);
 }
 
-function invest_login(string $password): bool
+function invest_login(string $email, string $password): bool
 {
-    if (password_verify($password, INVEST_PASSWORD_HASH)) {
+    $user = invest_find_user_by_email($email);
+    if ($user !== null && password_verify($password, (string) $user['hash'])) {
         // Nouvel identifiant de session à la connexion (protection contre la fixation de session)
         session_regenerate_id(true);
-        $_SESSION['invest_auth'] = true;
+        $_SESSION['invest_user_id'] = (string) $user['id'];
         return true;
     }
     return false;
+}
+
+// Compte actuellement connecté (null si non connecté)
+function invest_current_user(): ?array
+{
+    $id = (string) ($_SESSION['invest_user_id'] ?? '');
+    if ($id === '') {
+        return null;
+    }
+    return invest_find_user_by_id($id);
 }
 
 function invest_logout(): void

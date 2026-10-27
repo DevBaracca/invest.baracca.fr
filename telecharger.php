@@ -6,30 +6,25 @@
  */
 
 require_once __DIR__ . '/includes/auth.php';
+require_once __DIR__ . '/includes/documents.php';
 
 if (!invest_is_logged_in()) {
     header('Location: investisseurs.php');
     exit;
 }
 
-// Liste blanche des documents téléchargeables (aucun chemin relatif n'est possible)
-$documentsAutorises = [
-    'statuts-baracca.pdf',
-    'business-plan-baracca.pdf',
-    'contrat-type-baracca.pdf',
-    'reglement-interieur-baracca.pdf',
-];
-
+// Documents téléchargeables : uniquement les fichiers présents dans assets/documents/
+// avec une extension autorisée (aucun chemin relatif n'est possible)
 $filename = basename((string) ($_GET['f'] ?? ''));
-$path = __DIR__ . '/assets/documents/' . $filename;
+$path = invest_documents_dir() . '/' . $filename;
 
-if (!in_array($filename, $documentsAutorises, true) || !is_file($path)) {
+if (!in_array(invest_document_extension($filename), invest_documents_extensions(), true) || !is_file($path)) {
     http_response_code(404);
     exit('Document introuvable.');
 }
 
 // Envoi du fichier en pièce jointe
-header('Content-Type: application/pdf');
+header('Content-Type: ' . invest_document_content_type($filename));
 header('Content-Disposition: attachment; filename="' . $filename . '"');
 header('Content-Length: ' . (string) filesize($path));
 header('Cache-Control: private, no-store');

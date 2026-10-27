@@ -1,6 +1,9 @@
 <?php
 $pageTitle = 'Baracca | L\'habitat mobile, biosourcé et réversible';
 $pageDescription = 'Baracca - Modules d\'habitation en ossature bois biosourcés, mobiles et réversibles. Investissez dans l\'habitat de demain.';
+require_once __DIR__ . '/includes/stats.php';
+$stats = invest_stats();
+
 include 'includes/head.html';
 ?>
 
@@ -69,19 +72,19 @@ include 'includes/head.html';
       <h2 class="section-title fade-in">Chiffres clés</h2>
       <div class="stats-row fade-in">
         <div class="stat-item">
-          <span class="stat-number" data-target="250000">0</span>
+          <span class="stat-number" data-target="<?= (int) $stats['euros_collectes'] ?>">0</span>
           <span class="stat-label">Euros collectés</span>
         </div>
         <div class="stat-item">
-          <span class="stat-number" data-target="300000">300 000</span>
+          <span class="stat-number" data-target="<?= (int) $stats['objectif'] ?>"><?= invest_format_montant((int) $stats['objectif']) ?></span>
           <span class="stat-label">Objectif</span>
         </div>
         <div class="stat-item">
-          <span class="stat-number" data-target="12">0</span>
+          <span class="stat-number" data-target="<?= (int) $stats['modules_deployes'] ?>">0</span>
           <span class="stat-label">Modules déployés</span>
         </div>
         <div class="stat-item">
-          <span class="stat-number" data-target="42">0</span>
+          <span class="stat-number" data-target="<?= (int) $stats['investisseurs'] ?>">0</span>
           <span class="stat-label">Investisseurs</span>
         </div>
       </div>

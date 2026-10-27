@@ -1,22 +1,26 @@
 <?php
 require_once __DIR__ . '/includes/auth.php';
 require_once __DIR__ . '/includes/blog.php';
+require_once __DIR__ . '/includes/stats.php';
+require_once __DIR__ . '/includes/documents.php';
+
+$stats = invest_stats();
 
 // ============================================
 // Connexion
 // ============================================
 $loginError = '';
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['password'])) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email'], $_POST['password'])) {
     if (invest_rate_limit_is_blocked()) {
         $minutes = (int) ceil(invest_rate_limit_blocked_seconds() / 60);
         $loginError = 'Trop de tentatives de connexion. Réessayez dans ' . $minutes . ' min.';
-    } elseif (invest_login((string) $_POST['password'])) {
+    } elseif (invest_login((string) $_POST['email'], (string) $_POST['password'])) {
         invest_rate_limit_success();
         header('Location: investisseurs.php');
         exit;
     } else {
         invest_rate_limit_failure();
-        $loginError = 'Mot de passe incorrect.';
+        $loginError = 'Email ou mot de passe incorrect.';
     }
 }
 
@@ -30,16 +34,17 @@ include 'includes/head.html';
   <div class="password-prompt">
     <div class="password-container">
       <h2>Espace Investisseurs</h2>
-      <p>Cet espace est réservé aux investisseurs de Baracca. Veuillez entrer le mot de passe pour accéder aux documents.</p>
+      <p>Cet espace est réservé aux investisseurs de Baracca. Veuillez entrer votre email et votre mot de passe pour accéder aux documents.</p>
       <?php if ($loginError !== ''): ?>
         <p style="color: #b3402a;"><em><?= htmlspecialchars($loginError) ?></em></p>
       <?php endif; ?>
       <form method="post" action="investisseurs.php">
-        <input type="password" name="password" placeholder="Entrez le mot de passe" required autofocus>
+        <input type="email" name="email" placeholder="Votre email" required autofocus>
+        <input type="password" name="password" placeholder="Votre mot de passe" required>
         <button type="submit" class="btn-cta">Accéder</button>
       </form>
       <p style="margin-top: var(--spacing-md); font-size: var(--font-size-small); color: var(--gray);">
-        <em>Ce mot de passe vous a été communiqué lors de votre investissement.</em>
+        <em>Ces identifiants vous ont été communiqués lors de votre investissement.</em>
       </p>
     </div>
   </div>
@@ -50,7 +55,8 @@ include 'includes/head.html';
     <section class="hero" style="min-height: 50vh;">
       <div class="container">
         <div class="hero-content fade-in">
-          <h1>Bienvenue dans l'espace investisseurs</h1>
+          <?php $currentUser = invest_current_user(); ?>
+          <h1>Bienvenue<?= $currentUser !== null && $currentUser['name'] !== '' ? ', ' . htmlspecialchars($currentUser['name']) : '' ?> dans l'espace investisseurs</h1>
           <p class="hero-subtitle">Retrouvez ici tous les documents et informations réservés aux membres de la coopérative Baracca.</p>
           <p style="margin-top: var(--spacing-sm); font-size: var(--font-size-small);"><a href="deconnexion.php">Se déconnecter</a></p>
         </div>
@@ -66,19 +72,19 @@ include 'includes/head.html';
           
           <div class="stats-row" style="margin: var(--spacing-xl) 0;">
             <div class="stat-item">
-              <span class="stat-number" data-target="250000">0</span>
+              <span class="stat-number" data-target="<?= (int) $stats['euros_collectes'] ?>">0</span>
               <span class="stat-label">Euros collectés</span>
             </div>
             <div class="stat-item">
-              <span class="stat-number" data-target="300000">300 000</span>
+              <span class="stat-number" data-target="<?= (int) $stats['objectif'] ?>"><?= invest_format_montant((int) $stats['objectif']) ?></span>
               <span class="stat-label">Objectif</span>
             </div>
             <div class="stat-item">
-              <span class="stat-number" data-target="42">0</span>
+              <span class="stat-number" data-target="<?= (int) $stats['investisseurs'] ?>">0</span>
               <span class="stat-label">Investisseurs</span>
             </div>
             <div class="stat-item">
-              <span class="stat-number" data-target="12">0</span>
+              <span class="stat-number" data-target="<?= (int) $stats['modules_production'] ?>">0</span>
               <span class="stat-label">Modules en production</span>
             </div>
           </div>
@@ -86,11 +92,11 @@ include 'includes/head.html';
           <!-- Barre de progression -->
           <div class="timeline" style="margin: var(--spacing-xl) 0;">
             <div class="progress-labels">
-              <span><strong id="investor-amount-raised">250 000</strong> € collectés</span>
-              <span><strong>300 000</strong> € (objectif)</span>
+              <span><strong id="investor-amount-raised"><?= invest_format_montant((int) $stats['euros_collectes']) ?></strong> € collectés</span>
+              <span><strong><?= invest_format_montant((int) $stats['objectif']) ?></strong> € (objectif)</span>
             </div>
             <div class="progress-track">
-              <div id="investor-progress-bar" class="progress-fill" style="width: 83%;"></div>
+              <div id="investor-progress-bar" class="progress-fill" style="width: <?= invest_progress_percent($stats) ?>%;"></div>
             </div>
           </div>
         </div>
@@ -102,8 +108,13 @@ include 'includes/head.html';
       <div class="container">
         <h2 class="section-title fade-in">Documents</h2>
         <p class="section-subtitle fade-in">Téléchargez les documents officiels de la coopérative Baracca.</p>
-        
+
+        <?php $documents = invest_liste_documents(); ?>
+        <?php if ($documents === []): ?>
+        <p class="fade-in" style="text-align: center; color: var(--gray);"><em>Aucun document disponible pour le moment.</em></p>
+        <?php else: ?>
         <div class="feature-grid fade-in">
+          <?php foreach ($documents as $doc): ?>
           <div class="feature-card">
             <div class="feature-icon">
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -113,81 +124,20 @@ include 'includes/head.html';
                 <line x1="16" y1="17" x2="8" y2="17"></line>
               </svg>
             </div>
-            <h3>Statuts de la coopérative</h3>
-            <p>Document officiel décrivant les règles de fonctionnement de Baracca SCIC.</p>
-            <a href="telecharger.php?f=statuts-baracca.pdf" class="btn btn-secondary" style="margin-top: var(--spacing-sm);">
+            <h3><?= htmlspecialchars($doc['fichier']) ?></h3>
+            <p><?= strtoupper(htmlspecialchars($doc['extension'])) ?> — <?= htmlspecialchars(invest_format_taille($doc['taille'])) ?></p>
+            <a href="telecharger.php?f=<?= urlencode($doc['fichier']) ?>" class="btn btn-secondary" style="margin-top: var(--spacing-sm);">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: var(--spacing-xs);">
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
                 <polyline points="7,10 12,15 17,10"></polyline>
                 <line x1="12" y1="15" x2="12" y2="3"></line>
               </svg>
-              Télécharger (PDF)
+              Télécharger
             </a>
           </div>
-          
-          <div class="feature-card">
-            <div class="feature-icon">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                <polyline points="14,2 14,8 20,8"></polyline>
-                <line x1="16" y1="13" x2="8" y2="13"></line>
-                <line x1="16" y1="17" x2="8" y2="17"></line>
-              </svg>
-            </div>
-            <h3>Business Plan</h3>
-            <p>Présentation détaillée de la stratégie, des objectifs et des prévisions financières.</p>
-            <a href="telecharger.php?f=business-plan-baracca.pdf" class="btn btn-secondary" style="margin-top: var(--spacing-sm);">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: var(--spacing-xs);">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                <polyline points="7,10 12,15 17,10"></polyline>
-                <line x1="12" y1="15" x2="12" y2="3"></line>
-              </svg>
-              Télécharger (PDF)
-            </a>
-          </div>
-          
-          <div class="feature-card">
-            <div class="feature-icon">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                <polyline points="14,2 14,8 20,8"></polyline>
-                <line x1="16" y1="13" x2="8" y2="13"></line>
-                <line x1="16" y1="17" x2="8" y2="17"></line>
-              </svg>
-            </div>
-            <h3>Contrat type</h3>
-            <p>Modèle de contrat d'investissement pour devenir sociétaire.</p>
-            <a href="telecharger.php?f=contrat-type-baracca.pdf" class="btn btn-secondary" style="margin-top: var(--spacing-sm);">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: var(--spacing-xs);">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                <polyline points="7,10 12,15 17,10"></polyline>
-                <line x1="12" y1="15" x2="12" y2="3"></line>
-              </svg>
-              Télécharger (PDF)
-            </a>
-          </div>
-          
-          <div class="feature-card">
-            <div class="feature-icon">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                <polyline points="14,2 14,8 20,8"></polyline>
-                <line x1="16" y1="13" x2="8" y2="13"></line>
-                <line x1="16" y1="17" x2="8" y2="17"></line>
-              </svg>
-            </div>
-            <h3>Règlement intérieur</h3>
-            <p>Règles de gouvernance et de fonctionnement interne de la coopérative.</p>
-            <a href="telecharger.php?f=reglement-interieur-baracca.pdf" class="btn btn-secondary" style="margin-top: var(--spacing-sm);">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: var(--spacing-xs);">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                <polyline points="7,10 12,15 17,10"></polyline>
-                <line x1="12" y1="15" x2="12" y2="3"></line>
-              </svg>
-              Télécharger (PDF)
-            </a>
-          </div>
+          <?php endforeach; ?>
         </div>
+        <?php endif; ?>
       </div>
     </section>
 
@@ -274,17 +224,6 @@ include 'includes/head.html';
       </div>
     </section>
   </div>
-
-  <script>
-    // Mettre à jour la barre de progression pour les investisseurs
-    document.addEventListener('DOMContentLoaded', () => {
-      const amountRaised = 250000; // Montant actuel (à mettre à jour)
-      const goal = 300000;
-      const progress = (amountRaised / goal) * 100;
-      document.getElementById('investor-progress-bar').style.width = `${progress}%`;
-      document.getElementById('investor-amount-raised').textContent = amountRaised.toLocaleString('fr-FR');
-    });
-  </script>
 <?php endif; ?>
 
 <?php include 'includes/footer.php'; ?>

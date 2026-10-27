@@ -1,6 +1,9 @@
 <?php
 $pageTitle = 'Investir - Baracca';
 $pageDescription = 'Devenez investisseur dans Baracca, la coopérative d\'habitat mobile et biosourcé. Levée de fonds de 300k€.';
+require_once __DIR__ . '/includes/stats.php';
+$stats = invest_stats();
+
 include 'includes/head.html';
 ?>
 
@@ -39,7 +42,7 @@ include 'includes/head.html';
   <!-- Objectif Section -->
   <section class="section section-light">
     <div class="container">
-      <h2 class="section-title fade-in">Notre objectif : 300 000 €</h2>
+      <h2 class="section-title fade-in">Notre objectif : <?= invest_format_montant((int) $stats['objectif']) ?> €</h2>
       <div class="fade-in" style="max-width: 800px; margin: 0 auto;">
         <p class="section-subtitle">
           Ces fonds nous permettront de finaliser le développement de nos premiers modules, de lancer la production et de déployer nos solutions sur le marché.
@@ -48,25 +51,25 @@ include 'includes/head.html';
         <!-- Barre de progression -->
         <div style="margin: var(--spacing-xl) 0;">
           <div class="progress-labels">
-            <span><strong id="amount-raised">250 000</strong> € collectés</span>
-            <span><strong>300 000</strong> € (objectif)</span>
+            <span><strong id="amount-raised"><?= invest_format_montant((int) $stats['euros_collectes']) ?></strong> € collectés</span>
+            <span><strong><?= invest_format_montant((int) $stats['objectif']) ?></strong> € (objectif)</span>
           </div>
           <div class="progress-track">
-            <div id="progress-bar" class="progress-fill" style="width: 83%;"></div>
+            <div id="progress-bar" class="progress-fill" style="width: <?= invest_progress_percent($stats) ?>%;"></div>
           </div>
         </div>
         
         <div class="stats-row">
           <div class="stat-item">
-            <span class="stat-number" data-target="42">0</span>
+            <span class="stat-number" data-target="<?= (int) $stats['investisseurs'] ?>">0</span>
             <span class="stat-label">Investisseurs</span>
           </div>
           <div class="stat-item">
-            <span class="stat-number" data-target="12">0</span>
+            <span class="stat-number" data-target="<?= (int) $stats['modules_production'] ?>">0</span>
             <span class="stat-label">Modules en production</span>
           </div>
           <div class="stat-item">
-            <span class="stat-number" data-target="50">0</span>
+            <span class="stat-number" data-target="<?= (int) $stats['demandes_attente'] ?>">0</span>
             <span class="stat-label">Demandes en attente</span>
           </div>
         </div>
@@ -198,7 +201,7 @@ include 'includes/head.html';
         </p>
         <a href="investisseurs.php" class="btn-cta">Accéder à l'espace investisseurs</a>
         <p style="margin-top: var(--spacing-md); font-size: var(--font-size-small); color: var(--gray);">
-          <em>Un mot de passe est requis pour accéder à cette section.</em>
+          <em>Un compte investisseur (email + mot de passe) est requis pour accéder à cette section.</em>
         </p>
       </div>
     </div>
@@ -216,16 +219,5 @@ include 'includes/head.html';
       </div>
     </div>
   </section>
-
-  <script>
-    // Mettre à jour la barre de progression en fonction du montant collecté
-    document.addEventListener('DOMContentLoaded', () => {
-      const amountRaised = 250000; // Montant actuel (à mettre à jour)
-      const goal = 300000;
-      const progress = (amountRaised / goal) * 100;
-      document.getElementById('progress-bar').style.width = `${progress}%`;
-      document.getElementById('amount-raised').textContent = amountRaised.toLocaleString('fr-FR');
-    });
-  </script>
 
 <?php include 'includes/footer.php'; ?>
