@@ -174,7 +174,7 @@ include 'includes/head.html';
         <div class="fade-in" style="max-width: 800px; margin: 0 auto;">
           <p class="section-subtitle">Voici les grandes étapes à venir pour Baracca.</p>
           
-          <div style="margin: var(--spacing-xl) 0;">
+          <div class="timeline" style="margin: var(--spacing-xl) 0;">
             <div class="timeline-item">
               <div class="timeline-marker">06/24</div>
               <div class="timeline-content">
