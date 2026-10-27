@@ -21,7 +21,16 @@ include 'includes/head.html';
         <!-- Formulaire -->
         <div class="fade-in">
           <h2>Envoyez-nous un message</h2>
-          <form id="contact-form" class="contact-form" netlify>
+          <?php if (isset($_GET['contact'])): ?>
+            <?php if ($_GET['contact'] === 'success'): ?>
+              <p style="color: var(--primary);"><em>Merci ! Votre message a bien été envoyé. Nous vous répondrons rapidement.</em></p>
+            <?php elseif ($_GET['contact'] === 'rate'): ?>
+              <p style="color: #b3402a;"><em>Vous avez envoyé plusieurs messages récemment. Merci de réessayer dans une heure.</em></p>
+            <?php else: ?>
+              <p style="color: #b3402a;"><em>Une erreur est survenue lors de l'envoi. Veuillez réessayer ou nous écrire directement à invest@baracca.fr.</em></p>
+            <?php endif; ?>
+          <?php endif; ?>
+          <form id="contact-form" class="contact-form" action="send_contact.php" method="post">
             <div class="form-group">
               <label for="name">Nom *</label>
               <input type="text" id="name" name="name" required>

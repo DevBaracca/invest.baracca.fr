@@ -84,3 +84,20 @@ Fonctionnement :
   en ligne (`https://blog.baracca.fr`).
 - Si le blog est injoignable, la section affiche un message discret
   sans casser la page.
+
+------------
+
+Formulaire de contact fonctionnel (send_contact.php)
+
+Le formulaire de contact.php était prévu pour Netlify Forms (attribut
+`netlify`, pas d'action) : hors Netlify, l'envoi ne fonctionnait pas.
+Il poste désormais vers `send_contact.php` (méthode POST) :
+
+- validation des champs (nom, email valide, message) ;
+- envoi à invest@baracca.fr par mail() (Reply-To = l'email du visiteur) ;
+- limitation de débit : 3 messages par heure et par adresse IP
+  (data/contact-rate-limit.json) ;
+- retour sur contact.php avec un message (?contact=success / error / rate).
+
+Note : l'envoi dépend de la fonction mail() du serveur (sendmail/SMTP
+configuré côté hébergeur).
