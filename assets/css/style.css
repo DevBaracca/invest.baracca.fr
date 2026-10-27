@@ -2747,23 +2747,26 @@ img, picture, video, canvas, svg {
    Galerie
    ============================================ */
 .gallery {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  display: flex;
+  flex-wrap: nowrap;
   gap: var(--spacing-lg);
+  overflow-x: auto;
+  padding-bottom: var(--spacing-sm);
 }
 
 .gallery-item {
   position: relative;
-  aspect-ratio: 4 / 3;
+  flex: 0 0 auto;
+  height: 200px;
   overflow: hidden;
   border-radius: var(--border-radius-lg);
   box-shadow: var(--box-shadow);
 }
 
 .gallery-item img {
-  width: 100%;
   height: 100%;
-  object-fit: cover;
+  width: auto;
+  object-fit: contain;
   transition: var(--transition);
 }
 
@@ -2922,6 +2925,16 @@ img, picture, video, canvas, svg {
   box-shadow: var(--box-shadow-lg);
 }
 
+/* Image affichée en entier dans une section split (pas de troncature) */
+.split-img {
+  width: 100%;
+  max-width: 420px;
+  height: auto;
+  object-fit: contain;
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--box-shadow-lg);
+}
+
 /* ============================================
    Grille contact (formulaire + coordonnées)
    ============================================ */
@@ -3003,9 +3016,5 @@ img, picture, video, canvas, svg {
 
   .password-container {
     padding: var(--spacing-xl);
-  }
-
-  .gallery {
-    grid-template-columns: 1fr;
   }
 }

@@ -31,7 +31,7 @@ include 'includes/head.html';
           </p>
           <a href="investir.php" class="btn btn-cta" style="margin-top: var(--spacing-lg);">Investir dans le projet</a>
         </div>
-        <div class="split-visual"><div class="split-visual-img" style="background-image: url('assets/images/systemeconstructif.png');"></div></div>
+        <div class="split-visual"><img src="assets/images/implantation.png" alt="Implantation d'un module Baracca sur micropieux" class="split-img"></div>
       </div>
     </div>
   </section>
@@ -116,7 +116,7 @@ include 'includes/head.html';
       <h2 class="section-title fade-in">Schéma technique</h2>
       <div class="fade-in" style="text-align: center;">
         <p class="section-subtitle">Découvrez comment nos modules sont conçus pour allier performance et mobilité.</p>
-        <div class="split-visual-img" style="background-image: url('assets/images/implantation.png'); max-width: 800px; aspect-ratio: auto; height: 500px; background-size: contain; background-repeat: no-repeat; margin: var(--spacing-xl) 0;"></div>
+        <img src="assets/images/systemeconstructif.png" alt="Schéma du système constructif d'un module Baracca" class="split-img" style="max-width: 800px; margin: var(--spacing-xl) 0;">
         <a href="investir.php" class="btn-cta">Investir dans Baracca</a>
       </div>
     </div>
