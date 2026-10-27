@@ -41,8 +41,12 @@ const amountRaised = 250000; // Remplacez par le montant actuel
 
 ------------
 
-Dans le fichier assets/js/script.js, modifiez la ligne :
-const INVESTOR_PASSWORD = 'Baracca2024'; // Remplacez par votre mot de passe
+Le mot de passe de l'espace investisseurs se change dans `config.php` :
+générez le hash bcrypt de votre nouveau mot de passe avec :
+```bash
+php -r "echo password_hash('votre_mot_de_passe', PASSWORD_DEFAULT);"
+```
+puis remplacez la valeur de `INVEST_PASSWORD_HASH`.
 
 ------------
 

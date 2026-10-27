@@ -1,30 +1,57 @@
 <?php
+require_once __DIR__ . '/includes/auth.php';
+
+// ============================================
+// Connexion
+// ============================================
+$loginError = '';
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['password'])) {
+    if (invest_rate_limit_is_blocked()) {
+        $minutes = (int) ceil(invest_rate_limit_blocked_seconds() / 60);
+        $loginError = 'Trop de tentatives de connexion. Réessayez dans ' . $minutes . ' min.';
+    } elseif (invest_login((string) $_POST['password'])) {
+        invest_rate_limit_success();
+        header('Location: investisseurs.php');
+        exit;
+    } else {
+        invest_rate_limit_failure();
+        $loginError = 'Mot de passe incorrect.';
+    }
+}
+
 $pageTitle = 'Espace Investisseurs - Baracca';
 $pageDescription = 'Espace réservé aux investisseurs de Baracca. Accédez aux documents exclusifs et au suivi financier.';
 include 'includes/head.html';
 ?>
 
-  <!-- Espace Investisseurs (protégé par mot de passe) -->
-  <div id="password-prompt" class="password-prompt">
+<?php if (!invest_is_logged_in()): ?>
+  <!-- Formulaire de connexion : sans authentification, le contenu réservé n'est pas envoyé au navigateur -->
+  <div class="password-prompt">
     <div class="password-container">
       <h2>Espace Investisseurs</h2>
       <p>Cet espace est réservé aux investisseurs de Baracca. Veuillez entrer le mot de passe pour accéder aux documents.</p>
-      <input type="password" id="password-input" placeholder="Entrez le mot de passe" required>
-      <button id="password-submit" class="btn-cta">Accéder</button>
+      <?php if ($loginError !== ''): ?>
+        <p style="color: #b3402a;"><em><?= htmlspecialchars($loginError) ?></em></p>
+      <?php endif; ?>
+      <form method="post" action="investisseurs.php">
+        <input type="password" name="password" placeholder="Entrez le mot de passe" required autofocus>
+        <button type="submit" class="btn-cta">Accéder</button>
+      </form>
       <p style="margin-top: var(--spacing-md); font-size: var(--font-size-small); color: var(--gray);">
         <em>Ce mot de passe vous a été communiqué lors de votre investissement.</em>
       </p>
     </div>
   </div>
-
-  <!-- Contenu réservé -->
-  <div id="investor-content" class="hidden">
+<?php else: ?>
+  <!-- Contenu réservé (envoyé uniquement après authentification) -->
+  <div id="investor-content">
     <!-- Hero Section -->
     <section class="hero" style="min-height: 50vh;">
       <div class="container">
         <div class="hero-content fade-in">
           <h1>Bienvenue dans l'espace investisseurs</h1>
           <p class="hero-subtitle">Retrouvez ici tous les documents et informations réservés aux membres de la coopérative Baracca.</p>
+          <p style="margin-top: var(--spacing-sm); font-size: var(--font-size-small);"><a href="deconnexion.php">Se déconnecter</a></p>
         </div>
       </div>
     </section>
@@ -87,7 +114,7 @@ include 'includes/head.html';
             </div>
             <h3>Statuts de la coopérative</h3>
             <p>Document officiel décrivant les règles de fonctionnement de Baracca SCIC.</p>
-            <a href="assets/documents/statuts-baracca.pdf" download class="btn btn-secondary" style="margin-top: var(--spacing-sm);">
+            <a href="telecharger.php?f=statuts-baracca.pdf" class="btn btn-secondary" style="margin-top: var(--spacing-sm);">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: var(--spacing-xs);">
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
                 <polyline points="7,10 12,15 17,10"></polyline>
@@ -108,7 +135,7 @@ include 'includes/head.html';
             </div>
             <h3>Business Plan</h3>
             <p>Présentation détaillée de la stratégie, des objectifs et des prévisions financières.</p>
-            <a href="assets/documents/business-plan-baracca.pdf" download class="btn btn-secondary" style="margin-top: var(--spacing-sm);">
+            <a href="telecharger.php?f=business-plan-baracca.pdf" class="btn btn-secondary" style="margin-top: var(--spacing-sm);">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: var(--spacing-xs);">
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
                 <polyline points="7,10 12,15 17,10"></polyline>
@@ -129,7 +156,7 @@ include 'includes/head.html';
             </div>
             <h3>Contrat type</h3>
             <p>Modèle de contrat d'investissement pour devenir sociétaire.</p>
-            <a href="assets/documents/contrat-type-baracca.pdf" download class="btn btn-secondary" style="margin-top: var(--spacing-sm);">
+            <a href="telecharger.php?f=contrat-type-baracca.pdf" class="btn btn-secondary" style="margin-top: var(--spacing-sm);">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: var(--spacing-xs);">
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
                 <polyline points="7,10 12,15 17,10"></polyline>
@@ -150,7 +177,7 @@ include 'includes/head.html';
             </div>
             <h3>Règlement intérieur</h3>
             <p>Règles de gouvernance et de fonctionnement interne de la coopérative.</p>
-            <a href="assets/documents/reglement-interieur-baracca.pdf" download class="btn btn-secondary" style="margin-top: var(--spacing-sm);">
+            <a href="telecharger.php?f=reglement-interieur-baracca.pdf" class="btn btn-secondary" style="margin-top: var(--spacing-sm);">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: var(--spacing-xs);">
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
                 <polyline points="7,10 12,15 17,10"></polyline>
@@ -269,5 +296,6 @@ include 'includes/head.html';
       document.getElementById('investor-amount-raised').textContent = amountRaised.toLocaleString('fr-FR');
     });
   </script>
+<?php endif; ?>
 
 <?php include 'includes/footer.php'; ?>

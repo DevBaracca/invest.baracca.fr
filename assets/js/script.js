@@ -1,8 +1,7 @@
 /**
  * Baracca - Scripts site investissement
- * Design et interactions repris de siteweb (menu mobile, header au scroll,
- * bandeau cookies, FAQ) + fonctionnalités propres à siteinvest (espace
- * investisseurs protégé, formulaire de contact Netlify, compteurs).
+ * Design et interactions repris de dev.baracca.fr (menu mobile, header au scroll,
+ * bandeau cookies, FAQ) + fonctionnalités propres à siteinvest (formulaire de contact Netlify, compteurs).
  */
 
 // ============================================
@@ -16,7 +15,6 @@ document.addEventListener('DOMContentLoaded', () => {
   initScrollHeader();
   initCurrentYear();
   initHashScroll();
-  initInvestorSpace();
   initContactForm();
 
   // Add loaded class to body for any CSS transitions
@@ -512,50 +510,6 @@ function initCookieBanner() {
 
 // Initialize cookie banner
 initCookieBanner();
-
-// ============================================
-// 18. Espace Investisseurs (Protection par mot de passe)
-// ============================================
-const INVESTOR_PASSWORD = 'Baracca2024'; // À CHANGER PAR VOTRE MOT DE PASSE
-
-function initInvestorSpace() {
-  const passwordPrompt = document.getElementById('password-prompt');
-  const investorContent = document.getElementById('investor-content');
-
-  // Vérifier si l'accès a déjà été accordé pendant la session
-  if (sessionStorage.getItem('investorAccess') === 'granted') {
-    if (passwordPrompt) passwordPrompt.classList.add('hidden');
-    if (investorContent) investorContent.classList.remove('hidden');
-  } else if (passwordPrompt && investorContent) {
-    // Afficher le prompt
-    passwordPrompt.classList.remove('hidden');
-    investorContent.classList.add('hidden');
-
-    // Écouter le clic sur le bouton de soumission
-    const submitBtn = document.getElementById('password-submit');
-    const passwordInput = document.getElementById('password-input');
-
-    if (submitBtn && passwordInput) {
-      submitBtn.addEventListener('click', () => {
-        if (passwordInput.value === INVESTOR_PASSWORD) {
-          passwordPrompt.classList.add('hidden');
-          investorContent.classList.remove('hidden');
-          sessionStorage.setItem('investorAccess', 'granted');
-        } else {
-          alert('Mot de passe incorrect. Veuillez réessayer.');
-          passwordInput.value = '';
-        }
-      });
-
-      // Écouter la touche Entrée
-      passwordInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-          submitBtn.click();
-        }
-      });
-    }
-  }
-}
 
 // ============================================
 // 19. Formulaire de contact (Netlify Forms compatible)

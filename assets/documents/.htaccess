@@ -1,0 +1,9 @@
+# Interdit l'accès web direct aux documents réservés (Apache).
+# Le téléchargement passe par telecharger.php, qui vérifie l'authentification.
+<IfModule mod_authz_core.c>
+  Require all denied
+</IfModule>
+<IfModule !mod_authz_core.c>
+  Order allow,deny
+  Deny from all
+</IfModule>
