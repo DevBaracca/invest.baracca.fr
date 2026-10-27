@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/includes/auth.php';
+require_once __DIR__ . '/includes/blog.php';
 
 // ============================================
 // Connexion
@@ -194,37 +195,25 @@ include 'includes/head.html';
     <section class="section">
       <div class="container">
         <h2 class="section-title fade-in">Actualités</h2>
-        <p class="section-subtitle fade-in">Découvrez les dernières nouvelles de Baracca.</p>
+        <p class="section-subtitle fade-in">Découvrez les dernières nouvelles de Baracca, publiées sur <a href="<?= invest_blog_url('/index.php') ?>">notre blog</a>.</p>
         
+        <?php $actus = invest_blog_articles(3); ?>
+        <?php if (!empty($actus)): ?>
         <div class="feature-grid fade-in">
+          <?php foreach ($actus as $actu): ?>
           <div class="feature-card">
-            <p style="font-size: var(--font-size-small); color: var(--gray); margin-bottom: var(--spacing-xs);">15 mai 2024</p>
-            <h3>Nouveau module déployé à Lyon</h3>
-            <p>Notre premier module en centre-ville a été installé à Lyon, marquant une étape clé dans notre développement.</p>
-            <a href="#" class="btn btn-secondary" style="margin-top: var(--spacing-sm);">En savoir plus</a>
+            <p style="font-size: var(--font-size-small); color: var(--gray); margin-bottom: var(--spacing-xs);">
+              <?= invest_format_date((string) ($actu['date'] ?? '')) ?>
+            </p>
+            <h3><?= htmlspecialchars((string) ($actu['titre'] ?? '')) ?></h3>
+            <p><?= htmlspecialchars((string) ($actu['extrait'] ?? '')) ?></p>
+            <a href="<?= invest_blog_url('/article.php?slug=' . urlencode((string) ($actu['slug'] ?? ''))) ?>" class="btn btn-secondary" style="margin-top: var(--spacing-sm);">Lire l'article</a>
           </div>
-          
-          <div class="feature-card">
-            <p style="font-size: var(--font-size-small); color: var(--gray); margin-bottom: var(--spacing-xs);">10 avril 2024</p>
-            <h3>Assemblée générale 2024</h3>
-            <p>Notre assemblée générale annuelle aura lieu le 30 juin 2024. Tous les sociétaires sont invités à y participer.</p>
-            <a href="#" class="btn btn-secondary" style="margin-top: var(--spacing-sm);">Voir le détail</a>
-          </div>
-          
-          <div class="feature-card">
-            <p style="font-size: var(--font-size-small); color: var(--gray); margin-bottom: var(--spacing-xs);">5 mars 2024</p>
-            <h3>Partenariat avec ÉcoBois</h3>
-            <p>Nous avons signé un partenariat stratégique avec ÉcoBois pour l'approvisionnement en bois certifié.</p>
-            <a href="#" class="btn btn-secondary" style="margin-top: var(--spacing-sm);">Lire l'article</a>
-          </div>
-          
-          <div class="feature-card">
-            <p style="font-size: var(--font-size-small); color: var(--gray); margin-bottom: var(--spacing-xs);">1er février 2024</p>
-            <h3>Lancement de la levée de fonds</h3>
-            <p>Notre campagne de levée de fonds a été officiellement lancée. Objectif : 300 000 € pour accélérer notre développement.</p>
-            <a href="#" class="btn btn-secondary" style="margin-top: var(--spacing-sm);">Voir le communiqué</a>
-          </div>
+          <?php endforeach; ?>
         </div>
+        <?php else: ?>
+        <p class="fade-in" style="text-align: center; color: var(--gray);"><em>Les actualités du blog sont momentanément indisponibles.</em></p>
+        <?php endif; ?>
       </div>
     </section>
 

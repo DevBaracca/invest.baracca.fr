@@ -67,3 +67,20 @@ Pour que le formulaire de contact fonctionne :
 
 
 
+
+------------
+
+Actualités de l'espace investisseurs alimentées par le blog
+
+La section « Actualités » de `investisseurs.php` affiche désormais les
+derniers articles publiés sur le blog (`blog.baracca.fr`), au lieu de
+cartes écrites à la main.
+
+Fonctionnement :
+- Le blog expose un flux JSON public : `blog.baracca.fr/api-articles.php`
+  (articles publiés uniquement : slug, titre, catégorie, date, extrait).
+- `includes/blog.php` récupère ce flux (timeout 5 s) et construit les
+  liens vers le blog : relatifs en local (`../blog.baracca.fr`), absolus
+  en ligne (`https://blog.baracca.fr`).
+- Si le blog est injoignable, la section affiche un message discret
+  sans casser la page.
