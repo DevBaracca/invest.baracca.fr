@@ -34,7 +34,7 @@ include 'includes/head.html';
             En investissant dans Baracca, vous ne soutenez pas seulement un projet innovant, vous en devenez un acteur clé, avec un droit de regard sur les décisions stratégiques.
           </p>
         </div>
-        <div class="split-visual"><div class="split-visual-img" style="background-image: url('assets/images/extensible.png');"></div></div>
+        <div class="split-visual"><img src="assets/images/implantation.png" alt="Implantation d'un module Baracca sur micropieux" class="split-img"></div>
       </div>
     </div>
   </section>

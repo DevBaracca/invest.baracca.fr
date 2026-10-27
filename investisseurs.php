@@ -90,7 +90,7 @@ include 'includes/head.html';
           </div>
           
           <!-- Barre de progression -->
-          <div class="timeline" style="margin: var(--spacing-xl) 0;">
+          <div class="progress-block" style="margin: var(--spacing-xl) 0;">
             <div class="progress-labels">
               <span><strong id="investor-amount-raised"><?= invest_format_montant((int) $stats['euros_collectes']) ?></strong> € collectés</span>
               <span><strong><?= invest_format_montant((int) $stats['objectif']) ?></strong> € (objectif)</span>

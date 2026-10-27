@@ -1941,13 +1941,12 @@ img, picture, video, canvas, svg {
   flex-direction: column;
   gap: var(--spacing-xl);
   position: relative;
-  padding-left: var(--spacing-xl);
 }
 
 .timeline::before {
   content: '';
   position: absolute;
-  left: 0;
+  left: 21px;
   top: 0;
   bottom: 0;
   width: 2px;
@@ -1958,12 +1957,13 @@ img, picture, video, canvas, svg {
 .timeline-item {
   position: relative;
   display: flex;
-  gap: var(--spacing-lg);
+  align-items: center;
+  gap: var(--spacing-xl);
 }
 
 .timeline-marker {
-  position: absolute;
-  left: -48px;
+  position: relative;
+  flex-shrink: 0;
   width: 44px;
   height: 44px;
   background-color: var(--white);
@@ -2608,19 +2608,14 @@ img, picture, video, canvas, svg {
   }
   
   .timeline::before {
-    left: 20px;
+    left: 15px;
   }
-  
-  .timeline {
-    padding-left: var(--spacing-lg);
-  }
-  
+
   .timeline-item {
     gap: var(--spacing-md);
   }
-  
+
   .timeline-marker {
-    left: -36px;
     width: 32px;
     height: 32px;
     font-size: var(--font-size-xs);
@@ -2968,17 +2963,22 @@ img, picture, video, canvas, svg {
 /* ============================================
    Barre de progression (levée de fonds)
    ============================================ */
+.progress-block {
+  display: flex;
+  flex-direction: column;
+}
+
 .progress-track {
   height: 20px;
   background-color: var(--gray-border);
-  border-radius: var(--border-radius-full);
+  border-radius: var(--border-radius-sm);
   overflow: hidden;
 }
 
 .progress-fill {
   height: 100%;
   background-color: var(--primary);
-  border-radius: var(--border-radius-full);
+  border-radius: var(--border-radius-sm);
   transition: width 1s ease;
 }
 

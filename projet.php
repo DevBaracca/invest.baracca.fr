@@ -116,7 +116,7 @@ include 'includes/head.html';
       <h2 class="section-title fade-in">Schéma technique</h2>
       <div class="fade-in" style="text-align: center;">
         <p class="section-subtitle">Découvrez comment nos modules sont conçus pour allier performance et mobilité.</p>
-        <img src="assets/images/systemeconstructif.png" alt="Schéma du système constructif d'un module Baracca" class="split-img" style="max-width: 800px; margin: var(--spacing-xl) 0;">
+        <img src="assets/images/systemeconstructif.png" alt="Schéma du système constructif d'un module Baracca" class="split-img" style="margin: var(--spacing-xl) 0;">
         <a href="investir.php" class="btn-cta">Investir dans Baracca</a>
       </div>
     </div>
