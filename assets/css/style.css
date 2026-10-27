@@ -585,6 +585,26 @@ img, picture, video, canvas, svg {
   color: var(--primary);
 }
 
+/* Bouton d'accès au back-office (fixé à droite du header) */
+.nav-admin {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 1px solid var(--gray-border);
+  background-color: var(--white);
+  color: var(--gray-dark);
+  transition: var(--transition);
+  flex-shrink: 0;
+}
+
+.nav-admin:hover {
+  color: var(--primary);
+  border-color: var(--primary);
+}
+
 .mobile-menu {
   position: absolute;
   top: 100%;
