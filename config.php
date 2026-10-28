@@ -15,7 +15,7 @@ define('INVEST_ADMIN_USERNAME', 'admin');
 // Pour définir un nouveau mot de passe, générez son hash avec :
 //   php -r "echo password_hash('votre_mot_de_passe', PASSWORD_DEFAULT);"
 // puis remplacez la valeur ci-dessous.
-define('INVEST_ADMIN_PASSWORD_HASH', '$2y$12$hNLDYl0C4Pl5dLFCLyg42unGPbDvdBWvprC9SgD3kpXtUYpO/RsqW');
+define('INVEST_ADMIN_PASSWORD_HASH', '$2y$12$ggZv1OhTcaaIzsPnu3tIP.CZy46c8uWl/jXwv.VPvElnAHrIiMOTa');
 
 // Chemins
 define('INVEST_DATA_DIR', __DIR__ . '/data');
