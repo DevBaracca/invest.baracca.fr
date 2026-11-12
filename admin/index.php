@@ -73,6 +73,11 @@ include __DIR__ . '/../includes/admin-head.php';
         <p>Créez et gérez les comptes ayant accès à l'espace investisseurs (email + mot de passe).</p>
         <a href="investisseurs.php" class="btn btn-secondary">Gérer les accès</a>
       </div>
+      <div class="admin-card">
+        <h2>Administrateurs</h2>
+        <p>Créez et gérez les comptes ayant accès à ce back-office (identifiant + mot de passe).</p>
+        <a href="administrateurs.php" class="btn btn-secondary">Gérer les administrateurs</a>
+      </div>
     </div>
 <?php
 include __DIR__ . '/../includes/admin-footer.php';

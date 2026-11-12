@@ -28,6 +28,7 @@ $adminLoggedIn = invest_admin_is_logged_in();
             <li><a href="stats.php"<?= $adminPage === 'stats' ? ' class="active"' : '' ?>>Chiffres clés</a></li>
             <li><a href="documents.php"<?= $adminPage === 'documents' ? ' class="active"' : '' ?>>Documents</a></li>
             <li><a href="investisseurs.php"<?= $adminPage === 'investisseurs' ? ' class="active"' : '' ?>>Accès investisseurs</a></li>
+            <li><a href="administrateurs.php"<?= $adminPage === 'administrateurs' ? ' class="active"' : '' ?>>Administrateurs</a></li>
           </ul>
         <?php else: ?>
           <ul class="nav-links">
@@ -67,6 +68,7 @@ $adminLoggedIn = invest_admin_is_logged_in();
             <li><a href="stats.php">Chiffres clés</a></li>
             <li><a href="documents.php">Documents</a></li>
             <li><a href="investisseurs.php">Accès investisseurs</a></li>
+            <li><a href="administrateurs.php">Administrateurs</a></li>
             <li><a href="logout.php">Se déconnecter</a></li>
           <?php else: ?>
             <li><a href="../index.php">Accueil</a></li>
