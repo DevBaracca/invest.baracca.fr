@@ -1,4 +1,7 @@
 <?php
+require_once __DIR__ . '/config.php';
+require_once __DIR__ . '/includes/stats_client.php';
+
 // Configuration de l'email de destination
 $to = "invest@baracca.fr";
 $subject = "Nouvelle inscription newsletter Baracca";
@@ -29,6 +32,7 @@ $mailSent = mail($to, $subject, $message, $headers);
 
 // Redirection vers le bas de page (footer)
 if ($mailSent) {
+    invest_stats_send('newsletter', null, $email); // métrique multi-sites (collecteur configurateur)
     header("Location: index.php?newsletter=success#footer");
 } else {
     header("Location: index.php?newsletter=error#footer");

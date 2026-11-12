@@ -20,6 +20,11 @@ define('INVEST_ADMIN_PASSWORD_HASH', '$2y$12$ggZv1OhTcaaIzsPnu3tIP.CZy46c8uWl/jX
 // Chemins
 define('INVEST_DATA_DIR', __DIR__ . '/data');
 
+// Jeton partagé du collecteur de métriques multi-sites (identique à
+// ARCHICAD_STATS_COLLECT_TOKEN dans config.php du configurateur) : les
+// événements du site sont envoyés à https://configurateur.baracca.fr/php/stats_collect.php
+define('INVEST_STATS_COLLECT_TOKEN', '9db708b595a5a8002de69d8b464edc1bea83878f');
+
 // Limitation de débit des connexions à l'espace investisseurs (par adresse IP)
 define('INVEST_LOGIN_MAX_ATTEMPTS', 5);     // échecs autorisés...
 define('INVEST_LOGIN_WINDOW_SECONDS', 900);  // ...dans une fenêtre de 15 minutes...

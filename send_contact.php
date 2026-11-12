@@ -5,6 +5,7 @@
  */
 
 require_once __DIR__ . '/config.php';
+require_once __DIR__ . '/includes/stats_client.php';
 
 // ============================================
 // Limitation de débit (par IP) : 3 messages par heure
@@ -108,6 +109,7 @@ $mailSent = mail($to, $mailSubject, $mailMessage, $headers);
 
 if ($mailSent) {
     contact_rate_limit_record($ip);
+    invest_stats_send('contact', null, $email); // métrique multi-sites (collecteur configurateur)
     header('Location: contact.php?contact=success');
 } else {
     header('Location: contact.php?contact=error');

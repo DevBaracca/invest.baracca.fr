@@ -7,6 +7,7 @@
 
 require_once __DIR__ . '/includes/auth.php';
 require_once __DIR__ . '/includes/documents.php';
+require_once __DIR__ . '/includes/stats_client.php';
 
 if (!invest_is_logged_in()) {
     header('Location: investisseurs.php');
@@ -22,6 +23,10 @@ if (!in_array(invest_document_extension($filename), invest_documents_extensions(
     http_response_code(404);
     exit('Document introuvable.');
 }
+
+// Métrique multi-sites : téléchargement d'un document réservé
+$investUser = invest_current_user();
+invest_stats_send('telechargement', $investUser['id'] ?? null, $filename);
 
 // Envoi du fichier en pièce jointe
 header('Content-Type: ' . invest_document_content_type($filename));

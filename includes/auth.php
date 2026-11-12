@@ -8,6 +8,7 @@
 
 require_once __DIR__ . '/../config.php';
 require_once __DIR__ . '/users.php';
+require_once __DIR__ . '/stats_client.php';
 
 // Cookie de session renforcé : inaccessible en JavaScript, envoyé uniquement sur ce site (SameSite=Lax)
 session_set_cookie_params([
@@ -30,6 +31,7 @@ function invest_login(string $email, string $password): bool
         // Nouvel identifiant de session à la connexion (protection contre la fixation de session)
         session_regenerate_id(true);
         $_SESSION['invest_user_id'] = (string) $user['id'];
+        invest_stats_send('login', (string) $user['id']); // métrique multi-sites (collecteur configurateur)
         return true;
     }
     return false;
